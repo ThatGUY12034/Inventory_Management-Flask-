@@ -1,0 +1,59 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Sidebar Styling */
+.bg-black {
+    transition: width 0.3s;
+}
+
+.bg-black:hover {
+    width: 250px;
+}
+
+/* Sidebar Links */
+nav a {
+    transition: background 0.3s;
+}
+
+/* Hover Effect */
+nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Cards Styling */
+.bg-white {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bg-white:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile Image */
+img {
+    object-fit: cover;
+}
+
+/* Search Input */
+input[type="text"] {
+    outline: none;
+    border: 1px solid #ddd;
+    transition: border 0.3s;
+}
+
+input[type="text"]:focus {
+    border: 1px solid #007bff;
+}
+
+/* Icons */
+i {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+i:hover {
+    color: #007bff;
+}
