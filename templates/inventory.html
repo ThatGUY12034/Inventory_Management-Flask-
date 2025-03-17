@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory | Inventory Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="bg-black text-white w-64 min-h-screen">
+            <div class="p-4">
+                <h1 class="text-2xl font-bold">Inventory</h1>
+            </div>
+            <nav class="mt-10">
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('index') }}">Dashboard</a>
+                <a class="block py-2.5 px-4 bg-red-500 text-white font-semibold" href="#">Inventory</a>
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Sales') }}">Sales</a>
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="#">Purchases</a>
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="#">Reports</a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold">Inventory</h2>
+                <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded">+ Add New Item</a>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="bg-white p-4 rounded shadow">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="py-2 px-4 text-left">Item Name</th>
+                            <th class="py-2 px-4 text-left">Category</th>
+                            <th class="py-2 px-4 text-left">Stock</th>
+                            <th class="py-2 px-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in inventory %}
+                        <tr class="border-b">
+                            <td class="py-2 px-4">{{ item.name }}</td>
+                            <td class="py-2 px-4">{{ item.category }}</td>
+                            <td class="py-2 px-4 {% if item.stock < 5 %}text-red-500{% else %}text-green-500{% endif %}">
+                                {{ item.stock }}
+                            </td>
+                            <td class="py-2 px-4">
+                                <button class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
