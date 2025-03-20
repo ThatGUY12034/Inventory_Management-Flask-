@@ -1,0 +1,106 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for the login form */
+.a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Styling the popup form */
+.form-popup {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+/* Styling the form */
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Headings */
+.form-container h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Input fields */
+.form-container label {
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+}
+
+/* Buttons */
+.form-container .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.form-container .btn:hover {
+    background-color: #0056b3;
+}
+
+/* Register button */
+.form-container a.btn {
+    text-decoration: none;
+    display: inline-block;
+    background-color: #28a745;
+    text-align: center;
+}
+
+.form-container a.btn:hover {
+    background-color: #218838;
+}
+
+/* Alert messages */
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: white;
+}

@@ -33,3 +33,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+function toggleDropdown() {
+    var dropdown = document.getElementById("dropdownMenu");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+// Close the dropdown when clicking outside of it
+document.addEventListener("click", function(event) {
+    var dropdown = document.getElementById("dropdownMenu");
+    var image = document.querySelector(".dropdown img");
+    if (!dropdown.contains(event.target) && !image.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+});

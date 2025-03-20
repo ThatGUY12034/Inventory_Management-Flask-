@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Login.css') }}">
+</head>
+<body>
+   <div class="a">
+   <div class="form-popup" id="myForm">
+                <form  class="form-container" action="/login" method="POST" >
+                    <h1><b>Login </b></h1>
+
+                     {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category,message in messages %}
+                        <div class="alert alert-{{category}}">{{message}}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+                        <label>Username</label>
+                        <input type="text" name="name" class="form-control" required>
+                    
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    
+                        <input type="submit" value="Login" class="btn">
+                        <p>Don't have an account? 
+                            <a href="{{ url_for ('Register') }}" class="register-link">Register here</a>
+                        </p>  
+                </form>
+                    </div>
+            </div>
+  
+</body>
+</html>
+<script>
+    $(document).ready(function(){
+        $(".alert").hide(2000)
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $("form").attr("autocomplete","off");
+    });
+</script>

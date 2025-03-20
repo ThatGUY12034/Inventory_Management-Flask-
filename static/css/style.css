@@ -1,0 +1,98 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Sidebar Styling */
+.bg-black {
+    transition: width 0.3s;
+}
+
+.bg-black:hover {
+    width: 250px;
+}
+
+/* Sidebar Links */
+nav a {
+    transition: background 0.3s;
+}
+
+/* Hover Effect */
+nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Cards Styling */
+.bg-white {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bg-white:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile Image */
+img {
+    height: 40px;
+    width: 40px;
+}
+
+/* Search Input */
+input[type="text"] {
+    outline: none;
+    border: 1px solid #ddd;
+    transition: border 0.3s;
+}
+
+input[type="text"]:focus {
+    border: 1px solid #007bff;
+}
+
+/* Icons */
+i {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+i:hover {
+    color: #007bff;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Positioning Fixed) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000;
+    
+    /* Fixes the issue when dropdown is near the screen edge */
+    right: 0; /* Aligns dropdown to the right */
+    max-width: 200px; /* Prevents too-wide content */
+    overflow: hidden; /* Prevents content from overflowing */
+    white-space: nowrap; /* Ensures text stays in one line */
+}
+
+/* Dropdown Items */
+.dropdown-content a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: black;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}

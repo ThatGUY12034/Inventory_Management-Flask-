@@ -19,6 +19,14 @@ def inventory():
 @app.route('/Sales')
 def Sales():
     return render_template('Sales.html')
+    
+@app.route('/Login')
+def Login():
+    return render_template('Login.html')
+
+@app.route('/Register')
+def Register():
+    return render_template('Register.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

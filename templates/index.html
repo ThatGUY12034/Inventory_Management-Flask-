@@ -5,7 +5,7 @@
     <title>Inventory Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="bg-gray-100">
     <div class="flex">
@@ -39,7 +39,15 @@
                     <span class="text-lg font-semibold">Zylker</span>
                     <i class="fas fa-bell"></i>
                     <i class="fas fa-cog"></i>
-                    <img alt="User avatar" class="rounded-full w-10 h-10" height="40" src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" width="40"/>
+                    <div class="dropdown">
+                        <!-- Image that triggers the dropdown -->
+                        <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" alt="Dropdown Icon" onclick="toggleDropdown()" style="cursor: pointer;">
+                        
+                        <!-- Dropdown content -->
+                        <div class="dropdown-content" id="dropdownMenu">
+                            <a href="{{ url_for('Login') }}">Logout</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Sales Activity and Inventory Summary -->
@@ -143,7 +151,7 @@
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 </body>
 </html>
