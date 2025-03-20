@@ -28,5 +28,9 @@ def Login():
 def Register():
     return render_template('Register.html')
 
+@app.route('/Orders')
+def Orders():
+    return render_template('Orders.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

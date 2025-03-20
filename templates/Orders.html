@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Inventory Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Orders.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1>Inventory</h1>
+            <nav>
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('inventory') }}">Inventory</a>
+                <a href="{{ url_for('Sales') }}">Sales</a>
+                <a class="active" href="{{ url_for('Orders') }}">Orders</a>
+                <a href="#">Integrations</a>
+                <a href="#">Active Channels</a>
+                <a href="#">Reports</a>
+                <a href="#">Documents</a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="search-bar">
+                    <button><i class="fas fa-plus-circle"></i></button>
+                    <input type="text" placeholder="Search orders...">
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Zylker</span>
+                    <i class="fas fa-bell"></i>
+                    <i class="fas fa-cog"></i>
+                    <div class="dropdown">
+                        <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" 
+                             alt="Profile" class="profile-img" onclick="toggleDropdown()">
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <a href="{{ url_for('Login') }}">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Summary -->
+            <div class="orders-summary">
+                <div class="card">
+                    <h2>Pending Orders</h2>
+                    <p>15</p>
+                </div>
+                <div class="card">
+                    <h2>Shipped Orders</h2>
+                    <p>8</p>
+                </div>
+                <div class="card">
+                    <h2>Delivered Orders</h2>
+                    <p>20</p>
+                </div>
+                <div class="card">
+                    <h2>Returned Orders</h2>
+                    <p>3</p>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="orders-table">
+                <h2>Order Details</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#1001</td>
+                            <td>John Doe</td>
+                            <td>March 18, 2025</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td><button class="view-btn">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>#1002</td>
+                            <td>Jane Smith</td>
+                            <td>March 17, 2025</td>
+                            <td><span class="status shipped">Shipped</span></td>
+                            <td><button class="view-btn">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>#1003</td>
+                            <td>Michael Johnson</td>
+                            <td>March 16, 2025</td>
+                            <td><span class="status delivered">Delivered</span></td>
+                            <td><button class="view-btn">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/orders.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Container Layout */
+.container {
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 80px;
+    background: black;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    transition: width 0.3s;
+    overflow: hidden;
+}
+
+.sidebar:hover {
+    width: 250px;
+}
+
+/* Sidebar Links */
+nav a {
+    display: block;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    transition: background 0.3s;
+    font-size: 14px;
+}
+
+nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+nav .active {
+    background: red;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-bar input {
+    padding: 8px;
+    width: 250px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    transition: border 0.3s;
+}
+
+.search-bar input:focus {
+    border: 1px solid #007bff;
+}
+
+.search-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+}
+
+.search-bar button:hover {
+    color: #007bff;
+}
+
+/* User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    font-weight: bold;
+}
+
+.profile-img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    transition: border 0.3s;
+}
+
+.profile-img:hover {
+    border: 2px solid #007bff;
+}
+
+/* Icons */
+i {
+    cursor: pointer;
+    transition: color 0.2s;
+    font-size: 18px;
+}
+
+i:hover {
+    color: #007bff;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000;
+    right: 0;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: black;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Orders Summary */
+.orders-summary {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    flex: 1;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.card p {
+    font-size: 22px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Orders Table */
+.orders-table {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.orders-table h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #333;
+    color: white;
+}
+
+/* Status Labels */
+.status {
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.pending {
+    background: orange;
+    color: white;
+}
+
+.shipped {
+    background: blue;
+    color: white;
+}
+
+.delivered {
+    background: green;
+    color: white;
+}
+
+/* View Button */
+.view-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+    border-radius: 5px;
+}
+
+.view-btn:hover {
+    background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .orders-summary {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 60px;
+        padding: 10px;
+    }
+
+    .sidebar:hover {
+        width: 200px;
+    }
+
+    .search-bar input {
+        width: 180px;
+    }
+
+    .user-info {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 50px;
+        padding: 8px;
+    }
+
+    .sidebar:hover {
+        width: 180px;
+    }
+
+    .search-bar input {
+        width: 140px;
+    }
+
+    .orders-summary {
+        flex-direction: column;
+    }
+
+    .orders-table {
+        padding: 10px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    .view-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+}
