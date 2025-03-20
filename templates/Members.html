@@ -4,83 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Members - Inventory Management</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Members.css') }}">
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-4">Members Section</h1>
-        
-        <!-- Search Bar -->
-        <div class="mb-4">
-            <input type="text" id="search" placeholder="Search members..." class="w-full p-2 border rounded-md">
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1>Inventory</h1>
+            <nav>
+                <a href="{{ url_for('index') }}">Dashboard</a>
+                <a href="{{ url_for('inventory') }}">Inventory</a>
+                <a href="{{ url_for('Sales') }}">Sales</a>
+                <a href="#">Purchases</a>
+                <a href="#" class="active">Members</a>
+                <a href="#">Order Tracking</a>
+            </nav>
         </div>
 
-        <!-- Admins Table -->
-        <div class="bg-white p-4 rounded shadow mb-6">
-            <h2 class="text-xl font-semibold mb-2">Admin Members</h2>
-            <table class="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="p-2 border">#</th>
-                        <th class="p-2 border">Name</th>
-                        <th class="p-2 border">Email</th>
-                        <th class="p-2 border">Role</th>
-                        <th class="p-2 border">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for admin in admins %}
-                    <tr class="hover:bg-gray-100">
-                        <td class="p-2 border text-center">{{ loop.index }}</td>
-                        <td class="p-2 border flex items-center">
-                            <img src="{{ admin.profile_pic }}" class="w-8 h-8 rounded-full mr-2" alt="Profile">
-                            {{ admin.name }}
-                        </td>
-                        <td class="p-2 border">{{ admin.email }}</td>
-                        <td class="p-2 border text-center text-red-500 font-semibold">Admin</td>
-                        <td class="p-2 border text-center">
-                            <button class="text-blue-500 hover:underline"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="text-red-500 hover:underline"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Header with Dropdown -->
+            <div class="header">
+                <h2>Members</h2>
+                <div class="user-menu">
+                    <button id="userMenuBtn">
+                        <span>Admin</span>
+                        <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" alt="User Avatar">
+                    </button>
+                    <div id="dropdownMenu" class="dropdown">
+                        <a href="#">Profile</a>
+                        <a href="#" class="logout">Logout</a>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Users Table -->
-        <div class="bg-white p-4 rounded shadow">
-            <h2 class="text-xl font-semibold mb-2">User Members</h2>
-            <table class="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="p-2 border">#</th>
-                        <th class="p-2 border">Name</th>
-                        <th class="p-2 border">Email</th>
-                        <th class="p-2 border">Role</th>
-                        <th class="p-2 border">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr class="hover:bg-gray-100">
-                        <td class="p-2 border text-center">{{ loop.index }}</td>
-                        <td class="p-2 border flex items-center">
-                            <img src="{{ user.profile_pic }}" class="w-8 h-8 rounded-full mr-2" alt="Profile">
-                            {{ user.name }}
-                        </td>
-                        <td class="p-2 border">{{ user.email }}</td>
-                        <td class="p-2 border text-center text-blue-500 font-semibold">User</td>
-                        <td class="p-2 border text-center">
-                            <button class="text-blue-500 hover:underline"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="text-red-500 hover:underline"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <!-- Members Table -->
+            <div class="card">
+                <h3>Member Details</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Doe</td>
+                            <td>Manager</td>
+                            <td>johndoe@example.com</td>
+                            <td>+91 9876543210</td>
+                        </tr>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>Stock Keeper</td>
+                            <td>janesmith@example.com</td>
+                            <td>+91 8765432109</td>
+                        </tr>
+                        <tr>
+                            <td>Mark Wilson</td>
+                            <td>Sales Executive</td>
+                            <td>markwilson@example.com</td>
+                            <td>+91 9988776655</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

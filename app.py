@@ -28,5 +28,13 @@ def Login():
 def Register():
     return render_template('Register.html')
 
+@app.route('/Members')
+def Members():
+    return render_template('Members.html')
+
+@app.route('/Reports')
+def Reports():
+    return render_template('Reports.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

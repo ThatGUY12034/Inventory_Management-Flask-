@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Reports.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="bg-black text-white w-64 min-h-screen p-4">
+            <h1 class="text-2xl font-bold">Inventory</h1>
+            <nav class="mt-10">
+                <a href="{{ url_for('index') }}" class="block py-2.5 px-4 hover:bg-gray-700">Dashboard</a>
+                <a href="{{ url_for('inventory') }}" class="block py-2.5 px-4 hover:bg-gray-700">Inventory</a>
+                <a href="{{ url_for('Sales') }}" class="block py-2.5 px-4 hover:bg-gray-700">Sales</a>
+                <a href="#" class="block py-2.5 px-4 hover:bg-gray-700">Purchases</a>
+                <a href="{{ url_for('Members') }}" class="block py-2.5 px-4 hover:bg-gray-700">Members</a>
+                <a href="{{ url_for('Reports') }}" class="block py-2.5 px-4 bg-red-500">Reports</a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <h2 class="text-3xl font-bold mb-6">Reports</h2>
+
+            <!-- Report Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white p-4 rounded shadow">
+                    <h3 class="text-lg font-semibold">Total Sales</h3>
+                    <p class="text-2xl font-bold text-green-600">$12,450</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow">
+                    <h3 class="text-lg font-semibold">Total Purchases</h3>
+                    <p class="text-2xl font-bold text-blue-600">$9,800</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow">
+                    <h3 class="text-lg font-semibold">Net Profit</h3>
+                    <p class="text-2xl font-bold text-purple-600">$2,650</p>
+                </div>
+            </div>
+
+            <!-- Sales Chart -->
+            <div class="bg-white p-6 rounded shadow">
+                <h3 class="text-xl font-semibold mb-4">Sales Overview</h3>
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+</body>
+</html>
