@@ -1,6 +1,15 @@
 from flask import Flask, render_template
+import bcrypt
+from flask import Flask, request, render_template, redirect, url_for, flash
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+cred = credentials.Certificate("service-account.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 @app.route('/')
 def index():
@@ -24,9 +33,40 @@ def Sales():
 def Login():
     return render_template('Login.html')
 
-@app.route('/Register')
+@app.route('/Register', methods=['GET','POST'])
 def Register():
-    return render_template('Register.html')
+     if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        if password != confirm_password:
+            flash('Passwords do not match', 'danger')
+            return redirect(url_for('Register'))
+
+        # Check if user already exists
+        users_ref = db.collection('users')
+        existing_user = users_ref.where("email", "==", email).get()
+
+        if existing_user:
+            flash('Email already registered!', 'warning')
+            return redirect(url_for('Register'))
+
+        # Hash the password before storing
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        # Store user in Firestore
+        users_ref.add({
+            'username': username,
+            'email': email,
+            'password': hashed_password.decode('utf-8')  # Store as a string
+        })
+
+        flash('Registration successful! Please login.', 'success')
+        return redirect(url_for('Login'))
+
+     return render_template('Register.html')
 
 @app.route('/Orders')
 def Orders():
