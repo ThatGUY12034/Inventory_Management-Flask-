@@ -71,3 +71,40 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+document.getElementById("globalSearch").addEventListener("input", async function () {
+    let query = this.value.trim().toLowerCase();
+    let resultsDiv = document.getElementById("searchResults");
+    let resultsList = document.getElementById("resultsList");
+
+    if (query.length === 0) {
+        resultsDiv.classList.add("hidden");
+        return;
+    }
+
+    try {
+        let response = await fetch(`/search?q=${query}`);
+        let results = await response.json();
+
+        resultsList.innerHTML = ""; // Clear previous results
+        let hasResults = false;
+
+        for (let category in results) {
+            let categoryItem = document.createElement("li");
+            categoryItem.innerHTML = `<strong>${category.toUpperCase()}:</strong>`;
+            resultsList.appendChild(categoryItem);
+
+            results[category].forEach(item => {
+                let listItem = document.createElement("li");
+                listItem.textContent = item;
+                resultsList.appendChild(listItem);
+            });
+
+            hasResults = true;
+        }
+
+        resultsDiv.classList.toggle("hidden", !hasResults);
+    } catch (error) {
+        console.error("Search Error:", error);
+    }
+});
