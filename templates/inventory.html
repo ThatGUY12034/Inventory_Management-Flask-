@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
             <nav>
                 <a href="{{ url_for('index') }}">Dashboard</a>
                 <a href="#" class="active">Inventory</a>
-                <a href="{{ url_for('Sales') }}">Sales</a>  <!-- Lowercase Flask route -->
+                <a href="{{ url_for('Sales') }}">Sales</a>
                 <a href="{{ url_for('Orders') }}">Purchases</a>
                 <a href="{{ url_for('Reports') }}">Reports</a>
             </nav>
@@ -41,21 +42,38 @@
                         </tr>
                     </thead>
                     <tbody id="inventoryTable">
-                        <tr>
-                            <td>Example Item</td>
-                            <td>Electronics</td>
-                            <td class="stock-status">10</td>
-                            <td>
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </td>
-                        </tr>
+                        <!-- Inventory items will be dynamically inserted here -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    
-    <script src="{{ url_for('static', filename='js/inventory.js') }}"></script> <!-- defer hata diya -->
+
+    <!-- ✅ Modal Form -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add New Item</h2>
+
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" required>
+
+            <label for="itemCategory">Category:</label>
+            <select id="itemCategory" required>
+                <option value="">-- Select Category --</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Accessories">Accessories</option>
+            </select>
+
+            <label for="itemStock">Stock:</label>
+            <input type="number" id="itemStock" required>
+
+            <button id="saveBtn">Save</button>
+            <button id="closeModal">Cancel</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
 </body>
 </html>

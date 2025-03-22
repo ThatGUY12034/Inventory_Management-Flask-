@@ -1,3 +1,4 @@
+
 /* Global Styles */
 * {
     margin: 0;
@@ -133,4 +134,71 @@ th {
 
 .delete-btn:hover {
     background-color: #c9302c;
+}
+/* ✅ Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.modal-content button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+#saveBtn {
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+}
+
+#closeModal {
+    background: #dc3545;
+    color: white;
+    border-radius: 5px;
+}
+
+/* ✅ Table Button Styling */
+.edit-btn {
+    background: #ffc107;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background: #dc3545;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
 }

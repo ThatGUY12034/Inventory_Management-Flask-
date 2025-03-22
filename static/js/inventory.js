@@ -1,100 +1,134 @@
+
 document.addEventListener("DOMContentLoaded", function () {
-    const addItemBtn = document.getElementById("addItemBtn");
     const inventoryTable = document.getElementById("inventoryTable");
+    const addItemBtn = document.getElementById("addItemBtn");
+    const modal = document.getElementById("modal");
+    const closeModal = document.getElementById("closeModal");
+    const saveBtn = document.getElementById("saveBtn");
 
-    // Function to create table row dynamically
-    function addToTable(id, name, category, stock) {
-        const newRow = document.createElement("tr");
-        newRow.setAttribute("data-id", id);  // Unique ID for easy deletion
+    const modalTitle = document.getElementById("modalTitle");
+    const itemName = document.getElementById("itemName");
+    const itemCategory = document.getElementById("itemCategory");
+    const itemStock = document.getElementById("itemStock");
 
-        newRow.innerHTML = `
-            <td>${name}</td>
-            <td>${category}</td>
-            <td class="stock-status">${stock}</td>
-            <td>
-                <button class="edit-btn" onclick="editItem(${id}, '${name}', '${category}', ${stock})">Edit</button>
-                <button class="delete-btn" onclick="deleteItem(${id})">Delete</button>
-            </td>
-        `;
-        inventoryTable.appendChild(newRow);
+    let editingItemId = null; // Track if we are editing an item
+
+    // ✅ Fetch inventory items on page load
+    async function fetchInventory() {
+        try {
+            const response = await fetch("/inventory", { headers: { "X-Requested-With": "XMLHttpRequest" } });
+            const data = await response.json();
+
+            inventoryTable.innerHTML = ""; // Clear existing items
+            data.inventory.forEach(item => addInventoryRow(item));
+        } catch (error) {
+            console.error("Error fetching inventory:", error);
+        }
     }
 
-    // Fetch Existing Items from Database and Populate Table (on page load)
-    fetch("/get_inventory")
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(item => addToTable(item.id, item.name, item.category, item.stock));
-        })
-        .catch(error => console.error("Error loading inventory:", error));
+    // ✅ Show the modal for adding/editing
+    function openModal(editItem = null) {
+        modal.classList.add("show"); // Show modal
 
-    // Add New Item
-    addItemBtn?.addEventListener("click", function () {
-        const name = prompt("Enter item name:").trim();
-        const category = prompt("Enter item category:").trim();
-        const stock = parseInt(prompt("Enter stock quantity:"));
+        if (editItem) {
+            modalTitle.textContent = "Edit Item";
+            itemName.value = editItem.name;
+            itemCategory.value = editItem.category;
+            itemStock.value = editItem.stock;
+            editingItemId = editItem.id;
+        } else {
+            modalTitle.textContent = "Add New Item";
+            itemName.value = "";
+            itemCategory.value = "";
+            itemStock.value = "";
+            editingItemId = null;
+        }
+    }
+
+    // ✅ Close the modal
+    function closeModalHandler() {
+        modal.classList.remove("show");
+    }
+
+    // ✅ Add/Edit inventory item
+    async function addOrUpdateItem() {
+        const name = itemName.value.trim();
+        const category = itemCategory.value.trim();
+        const stock = parseInt(itemStock.value.trim());
 
         if (!name || !category || isNaN(stock) || stock < 0) {
-            alert("Invalid input. Please enter valid details.");
+            alert("Invalid input! Please enter valid details.");
             return;
         }
 
-        fetch("/add_item", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, category, stock })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                addToTable(data.id, name, category, stock);  // ✅ Add new row dynamically
-                alert("Item added successfully!");
-            } else {
-                alert("Failed to add item.");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    });
+        let url, method;
+        const itemData = { name, category, stock };
 
-    // Edit Item
-    window.editItem = function (id, name, category, stock) {
-        const newStock = parseInt(prompt(`Update stock for ${name}:`, stock));
-
-        if (isNaN(newStock) || newStock < 0) {
-            alert("Invalid stock quantity.");
-            return;
+        if (editingItemId) {
+            // Update existing item
+            url = `/edit_item/${editingItemId}`;
+            method = "POST";
+        } else {
+            // Add new item
+            url = "/add_item";
+            method = "POST";
         }
 
-        fetch(`/edit_item/${id}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ stock: newStock })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.querySelector(`[data-id='${id}'] .stock-status`).textContent = newStock;
-                alert("Item updated successfully!");
-            } else {
-                alert("Failed to update item.");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    };
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(itemData),
+            });
 
-    // Delete Item
-    window.deleteItem = function (id) {
+            const data = await response.json();
+            alert(data.message);
+            closeModalHandler();
+            fetchInventory();
+        } catch (error) {
+            console.error("Error saving item:", error);
+        }
+    }
+
+    // ✅ Delete an inventory item
+    async function deleteItem(itemId) {
         if (!confirm("Are you sure you want to delete this item?")) return;
 
-        fetch(`/delete_item/${id}`, { method: "DELETE" })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.querySelector(`[data-id='${id}']`).remove();  // ✅ Remove row dynamically
-                alert("Item deleted successfully!");
-            } else {
-                alert("Failed to delete item.");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-    };
+        try {
+            const response = await fetch(`/delete_item/${itemId}`, { method: "DELETE" });
+            const data = await response.json();
+            alert(data.message);
+            fetchInventory();
+        } catch (error) {
+            console.error("Error deleting item:", error);
+        }
+    }
+
+    // ✅ Add a row to the table
+    function addInventoryRow(item) {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.category}</td>
+            <td class="stock-status">${item.stock}</td>
+            <td>
+                <button class="edit-btn" data-id="${item.id}">Edit</button>
+                <button class="delete-btn" data-id="${item.id}">Delete</button>
+            </td>
+        `;
+
+        row.querySelector(".edit-btn").addEventListener("click", () => openModal(item));
+        row.querySelector(".delete-btn").addEventListener("click", () => deleteItem(item.id));
+
+        inventoryTable.appendChild(row);
+    }
+
+    // ✅ Event Listeners
+    addItemBtn.addEventListener("click", () => openModal());
+    closeModal.addEventListener("click", closeModalHandler);
+    saveBtn.addEventListener("click", addOrUpdateItem);
+
+    // ✅ Initial Fetch
+    fetchInventory();
 });

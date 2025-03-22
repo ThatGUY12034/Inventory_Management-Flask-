@@ -65,85 +65,96 @@ def search():
 
     return jsonify(results)
 
-@app.route('/inventory')
+
+@app.route('/inventory', methods=['GET'])
 def inventory():
-    """Fetches inventory items from Firebase Firestore and renders the inventory page."""
-    inventory_items = []
-    docs = db.collection("inventory").stream()
+    
+    try:
+        inventory_items = []
+        docs = db.collection("inventory").stream()
+        
+        for doc in docs:
+            item = doc.to_dict()
+            item["id"] = doc.id  # Store document ID for editing/deleting
+            inventory_items.append(item)
 
-    for doc in docs:
-        item = doc.to_dict()
-        item["id"] = doc.id  # Store document ID for editing/deleting
-        inventory_items.append(item)
+        # If AJAX request, return JSON
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify({"inventory": inventory_items})
 
-    return render_template('inventory.html', inventory=inventory_items)
+        return render_template('inventory.html', inventory=inventory_items)
+    
+    except Exception as e:
+        return jsonify({"error": f"Error fetching inventory: {str(e)}"}), 500
 
-# ➕ Add Item to Firestore
+# ✅ Add New Item
 @app.route('/add_item', methods=['POST'])
 def add_item():
-    """Adds a new item to Firebase Firestore."""
-    data = request.json
-    name = data.get("name")
-    category = data.get("category")
-    stock = data.get("stock")
-
-    if not name or not category or stock is None:
-        return jsonify({"error": "All fields are required"}), 400
 
     try:
+        data = request.json
+        name = data.get("name")
+        category = data.get("category")
+        stock = data.get("stock")
+
+        if not name or not category or stock is None:
+            return jsonify({"error": "All fields are required"}), 400
+
         stock = int(stock)
         if stock < 0:
             return jsonify({"error": "Stock value must be positive"}), 400
-    except ValueError:
-        return jsonify({"error": "Stock value must be a number"}), 400
 
-    new_item = {
-        "name": name,
-        "category": category,
-        "stock": stock
-    }
-    
-    # Insert into Firestore 'inventory' collection
-    db.collection("inventory").add(new_item)
+        new_item = {
+            "name": name.strip(),
+            "category": category.strip(),
+            "stock": stock
+        }
+        
+        db.collection("inventory").add(new_item)
+        return jsonify({"message": "Item added successfully!"}), 201
 
-    return jsonify({"message": "Item added successfully!"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Error adding item: {str(e)}"}), 500
 
-# ✏ Edit Item in Firestore
+# ✅ Edit Item
 @app.route('/edit_item/<item_id>', methods=['POST'])
 def edit_item(item_id):
-    """Edits an existing item in Firebase Firestore."""
-    data = request.json
-    name = data.get("name")
-    category = data.get("category")
-    stock = data.get("stock")
-
-    if not name or not category or stock is None:
-        return jsonify({"error": "All fields are required"}), 400
-
+  
     try:
+        data = request.json
+        name = data.get("name")
+        category = data.get("category")
+        stock = data.get("stock")
+
+        if not name or not category or stock is None:
+            return jsonify({"error": "All fields are required"}), 400
+
         stock = int(stock)
         if stock < 0:
             return jsonify({"error": "Stock value must be positive"}), 400
-    except ValueError:
-        return jsonify({"error": "Stock value must be a number"}), 400
 
-    updated_item = {
-        "name": name,
-        "category": category,
-        "stock": stock
-    }
-    
-    # Update item in Firestore
-    db.collection("inventory").document(item_id).update(updated_item)
+        updated_item = {
+            "name": name.strip(),
+            "category": category.strip(),
+            "stock": stock
+        }
 
-    return jsonify({"message": "Item updated successfully!"})
+        db.collection("inventory").document(item_id).set(updated_item, merge=True)
+        return jsonify({"message": "Item updated successfully!"})
 
-# ❌ Delete Item from Firestore
+    except Exception as e:
+        return jsonify({"error": f"Error updating item: {str(e)}"}), 500
+
+# ✅ Delete Item
 @app.route('/delete_item/<item_id>', methods=['DELETE'])
 def delete_item(item_id):
-    """Deletes an item from Firebase Firestore."""
-    db.collection("inventory").document(item_id).delete()
-    return jsonify({"message": "Item deleted successfully!"})
+  
+    try:
+        db.collection("inventory").document(item_id).delete()
+        return jsonify({"message": "Item deleted successfully!"})
+
+    except Exception as e:
+        return jsonify({"error": f"Error deleting item: {str(e)}"}), 500
 
 
 @app.route("/add_order", methods=["POST"])
