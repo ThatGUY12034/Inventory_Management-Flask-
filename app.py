@@ -64,15 +64,121 @@ def search():
                 results[key] = matched_items
 
     return jsonify(results)
+
 @app.route('/inventory')
 def inventory():
-    inventory_items = [
-        {"name": "Laptop", "category": "Electronics", "stock": 10},
-        {"name": "Notebook", "category": "Stationery", "stock": 3},
-        {"name": "Printer", "category": "Office Equipment", "stock": 5},
-        {"name": "Desk Chair", "category": "Furniture", "stock": 1},
-    ]
+    """Fetches inventory items from Firebase Firestore and renders the inventory page."""
+    inventory_items = []
+    docs = db.collection("inventory").stream()
+
+    for doc in docs:
+        item = doc.to_dict()
+        item["id"] = doc.id  # Store document ID for editing/deleting
+        inventory_items.append(item)
+
     return render_template('inventory.html', inventory=inventory_items)
+
+# ➕ Add Item to Firestore
+@app.route('/add_item', methods=['POST'])
+def add_item():
+    """Adds a new item to Firebase Firestore."""
+    data = request.json
+    name = data.get("name")
+    category = data.get("category")
+    stock = data.get("stock")
+
+    if not name or not category or stock is None:
+        return jsonify({"error": "All fields are required"}), 400
+
+    try:
+        stock = int(stock)
+        if stock < 0:
+            return jsonify({"error": "Stock value must be positive"}), 400
+    except ValueError:
+        return jsonify({"error": "Stock value must be a number"}), 400
+
+    new_item = {
+        "name": name,
+        "category": category,
+        "stock": stock
+    }
+    
+    # Insert into Firestore 'inventory' collection
+    db.collection("inventory").add(new_item)
+
+    return jsonify({"message": "Item added successfully!"}), 201
+
+# ✏ Edit Item in Firestore
+@app.route('/edit_item/<item_id>', methods=['POST'])
+def edit_item(item_id):
+    """Edits an existing item in Firebase Firestore."""
+    data = request.json
+    name = data.get("name")
+    category = data.get("category")
+    stock = data.get("stock")
+
+    if not name or not category or stock is None:
+        return jsonify({"error": "All fields are required"}), 400
+
+    try:
+        stock = int(stock)
+        if stock < 0:
+            return jsonify({"error": "Stock value must be positive"}), 400
+    except ValueError:
+        return jsonify({"error": "Stock value must be a number"}), 400
+
+    updated_item = {
+        "name": name,
+        "category": category,
+        "stock": stock
+    }
+    
+    # Update item in Firestore
+    db.collection("inventory").document(item_id).update(updated_item)
+
+    return jsonify({"message": "Item updated successfully!"})
+
+# ❌ Delete Item from Firestore
+@app.route('/delete_item/<item_id>', methods=['DELETE'])
+def delete_item(item_id):
+    """Deletes an item from Firebase Firestore."""
+    db.collection("inventory").document(item_id).delete()
+    return jsonify({"message": "Item deleted successfully!"})
+
+
+@app.route("/add_order", methods=["POST"])
+def add_order():
+    """Add a new order to Firebase"""
+    data = request.json
+    order_ref = db.collection("orders").document(data["orderId"])
+    order_ref.set({
+        "orderId": data["orderId"],
+        "customerName": data["customerName"],
+        "orderDate": data["orderDate"],
+        "orderStatus": data["orderStatus"]
+    })
+    return jsonify({"success": True, "message": "Order added successfully"})
+
+@app.route("/get_orders", methods=["GET"])
+def get_orders():
+    """Retrieve all orders from Firebase"""
+    orders = []
+    docs = db.collection("orders").stream()
+    for doc in docs:
+        orders.append(doc.to_dict())
+    return jsonify(orders)
+@app.route("/delete_order", methods=["POST"])
+def delete_order():
+    """Delete an order from Firebase"""
+    data = request.json
+    order_id = data.get("orderId")
+
+    if order_id:
+        db.collection("orders").document(order_id).delete()
+        return jsonify({"success": True, "message": "Order deleted successfully"})
+    
+    return jsonify({"success": False, "message": "Invalid Order ID"}), 400
+
 
 @app.route('/Sales')
 def Sales():
@@ -148,9 +254,86 @@ def Register():
 def Orders():
     return render_template('Orders.html')
 
-@app.route('/Members')
+members_ref = db.collection("members")  # Firestore Collection
+
+# 🔹 Route to display Members page
+@app.route('/Members')  
 def Members():
     return render_template('Members.html')
+
+# 🔹 Add Member API (Firestore)
+@app.route('/add_member', methods=['POST'])
+def add_member():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data received"}), 400
+        
+        new_member = {
+            "name": data.get("name"),
+            "address": data.get("address"),
+            "contact": data.get("contact"),
+            "mail": data.get("mail"),
+            "permission": data.get("permission")
+        }
+
+        # 🔥 Firestore uses `.add()`, not `.push()`
+        new_ref = members_ref.add(new_member)  # Adds document to Firestore
+        return jsonify({"success": True, "id": new_ref[1].id}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 🔹 Get Members API (Firestore)
+@app.route('/get_members', methods=['GET'])
+def get_members():
+    try:
+        members = []
+        docs = members_ref.stream()  # Firestore way of getting documents
+        
+        for doc in docs:
+            member = doc.to_dict()
+            member["id"] = doc.id  # Get Firestore document ID
+            members.append(member)
+
+        return jsonify(members), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 🔹 Delete Member API (Firestore)
+@app.route('/delete_member/<member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    try:
+        doc_ref = members_ref.document(member_id)
+        if doc_ref.get().exists:
+            doc_ref.delete()
+            return jsonify({"success": True, "message": "Member deleted"}), 200
+        return jsonify({"error": "Member not found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/update_member/<member_id>', methods=['PUT'])
+def update_member(member_id):
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data received"}), 400
+
+    member_ref = members_ref.document(member_id)
+    if not member_ref.get().exists:
+        return jsonify({"error": "Member not found"}), 404
+
+    member_ref.update({
+        "name": data.get("name"),
+        "address": data.get("address"),
+        "contact": data.get("contact"),
+        "mail": data.get("mail"),
+        "permission": data.get("permission")
+    })
+
+    return jsonify({"success": True, "message": "Member updated successfully"})
+
 
 @app.route('/Reports')
 def Reports():

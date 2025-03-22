@@ -27,11 +27,11 @@
             <!-- Header -->
             <div class="header">
                 <div class="search-bar">
-                    <button><i class="fas fa-plus-circle"></i></button>
-                    <input type="text" placeholder="Search orders...">
+                    <button id="addOrderBtn"><i class="fas fa-plus-circle"></i> Add Order</button>
+                    <input type="text" id="searchOrders" placeholder="Search orders..." onkeyup="searchOrders()">
                 </div>
                 <div class="user-info">
-                    <span class="user-name">Zylker</span>
+                    <span class="user-name">{{ session.get('user', 'Guest') }}</span>
                     <i class="fas fa-bell"></i>
                     <i class="fas fa-cog"></i>
                     <div class="dropdown">
@@ -48,19 +48,42 @@
             <div class="orders-summary">
                 <div class="card">
                     <h2>Pending Orders</h2>
-                    <p>15</p>
+                    <p id="pendingCount">0</p>
                 </div>
                 <div class="card">
                     <h2>Shipped Orders</h2>
-                    <p>8</p>
+                    <p id="shippedCount">0</p>
                 </div>
                 <div class="card">
                     <h2>Delivered Orders</h2>
-                    <p>20</p>
+                    <p id="deliveredCount">0</p>
                 </div>
                 <div class="card">
                     <h2>Returned Orders</h2>
-                    <p>3</p>
+                    <p id="returnedCount">0</p>
+                </div>
+            </div>
+
+            <!-- Order Form Modal -->
+            <div id="orderModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeModal">&times;</span>
+                    <h3>Add New Order</h3>
+                    <form id="addOrderForm">
+                        <input type="text" id="orderId" placeholder="Order ID" required>
+                        <input type="text" id="customerName" placeholder="Customer Name" required>
+                        <input type="date" id="orderDate" required>
+                        <select id="orderStatus">
+                            <option value="Pending">Pending</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Returned">Returned</option>
+                        </select>
+                        <div class="modal-buttons">
+                            <button type="submit">Save Order</button>
+                            <button type="button" id="cancelModal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -77,33 +100,14 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#1001</td>
-                            <td>John Doe</td>
-                            <td>March 18, 2025</td>
-                            <td><span class="status pending">Pending</span></td>
-                            <td><button class="view-btn">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>#1002</td>
-                            <td>Jane Smith</td>
-                            <td>March 17, 2025</td>
-                            <td><span class="status shipped">Shipped</span></td>
-                            <td><button class="view-btn">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>#1003</td>
-                            <td>Michael Johnson</td>
-                            <td>March 16, 2025</td>
-                            <td><span class="status delivered">Delivered</span></td>
-                            <td><button class="view-btn">View</button></td>
-                        </tr>
+                    <tbody id="ordersTableBody">
+                        <!-- Orders will be dynamically inserted here -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/orders.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/Orders.js') }}"></script>
 </body>
 </html>

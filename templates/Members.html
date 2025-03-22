@@ -3,78 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Members - Inventory Management</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Members.css') }}">
+    <title>Members Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="container">
+<body class="bg-gray-100">
+    <div class="flex">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <h1>Inventory</h1>
-            <nav>
-                <a href="{{ url_for('index') }}">Dashboard</a>
-                <a href="{{ url_for('inventory') }}">Inventory</a>
-                <a href="{{ url_for('Sales') }}">Sales</a>
-                <a href="{{ url_for('Orders') }}">Orders</a>
-                <a href="{{ url_for('Members') }}" class="active">Members</a>
-
+        <div class="bg-black text-white w-64 min-h-screen">
+            <div class="p-4">
+                <h1 class="text-2xl font-bold">Inventory</h1>
+            </div>
+            <nav class="mt-10">
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('index') }}">Dashboard</a>
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('inventory') }}">Inventory</a>
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Sales') }}">Sales</a>
+                <a class="block py-2.5 px-4 bg-red-500 text-white font-semibold" href="{{ url_for('Members') }}">Members</a>
+                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Reports') }}">Reports</a>
             </nav>
         </div>
 
         <!-- Main Content -->
-        <div class="content">
-            <!-- Header with Dropdown -->
-            <div class="header">
-                <h2>Members</h2>
-                <div class="user-menu">
-                    <button id="userMenuBtn">
-                        <span>Admin</span>
-                        <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" alt="User Avatar">
-                    </button>
-                    <div id="dropdownMenu" class="dropdown">
-                        <a href="#">Profile</a>
-                        <a href="#" class="logout">Logout</a>
-                    </div>
-                </div>
+        <div class="flex-1 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Manage Members</h2>
+                <button onclick="openForm()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Member</button>
+            </div>
+
+            <!-- Add Member Form -->
+            <div id="memberForm" class="hidden bg-white p-4 rounded shadow mb-6">
+                <h3 class="text-lg font-semibold mb-4">Add New Member</h3>
+                <form id="addMemberForm">
+                    <input type="text" id="name" placeholder="Name" class="border p-2 w-full mb-2" required>
+                    <input type="text" id="address" placeholder="Address" class="border p-2 w-full mb-2" required>
+                    <input type="text" id="contact" placeholder="Contact" class="border p-2 w-full mb-2" required>
+                    <input type="email" id="mail" placeholder="Email" class="border p-2 w-full mb-2" required>
+                    <input type="text" id="permission" placeholder="Permission Level" class="border p-2 w-full mb-2" required>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+                    <button type="button" onclick="closeForm()" class="bg-red-500 text-white px-4 py-2 rounded ml-2">Cancel</button>
+                </form>
             </div>
 
             <!-- Members Table -->
-            <div class="card">
-                <h3>Member Details</h3>
-                <table>
+            <div class="bg-white p-4 rounded shadow">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Member List</h3>
+                    <div>
+                        <button onclick="exportToCSV()" class="bg-blue-500 text-white px-3 py-1 rounded">Export CSV</button>
+                        <button onclick="exportToExcel()" class="bg-green-500 text-white px-3 py-1 rounded ml-2">Export Excel</button>
+                        <button onclick="printTable()" class="bg-gray-500 text-white px-3 py-1 rounded ml-2">Print</button>
+                    </div>
+                    </div>
+                </div>
+                <table class="w-full border-collapse border border-gray-300">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Email</th>
-                            <th>Phone</th>
+                        <tr class="bg-gray-200">
+                            <th class="border border-gray-300 p-2">S.No</th>
+                            <th class="border border-gray-300 p-2">Name</th>
+                            <th class="border border-gray-300 p-2">Address</th>
+                            <th class="border border-gray-300 p-2">Contact</th>
+                            <th class="border border-gray-300 p-2">Email</th>
+                            <th class="border border-gray-300 p-2">Permission</th>
+                            <th class="border border-gray-300 p-2">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>John Doe</td>
-                            <td>Manager</td>
-                            <td>johndoe@example.com</td>
-                            <td>+91 9876543210</td>
-                        </tr>
-                        <tr>
-                            <td>Jane Smith</td>
-                            <td>Stock Keeper</td>
-                            <td>janesmith@example.com</td>
-                            <td>+91 8765432109</td>
-                        </tr>
-                        <tr>
-                            <td>Mark Wilson</td>
-                            <td>Sales Executive</td>
-                            <td>markwilson@example.com</td>
-                            <td>+91 9988776655</td>
-                        </tr>
+                    <tbody id="membersTable">
+                        <!-- Data will be inserted dynamically -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Members.js') }}"></script>
 </body>
 </html>
