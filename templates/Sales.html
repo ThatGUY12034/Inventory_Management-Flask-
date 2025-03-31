@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script defer src="{{ url_for('static', filename='js/Sales.js') }}"></script>
 </head>
 <body class="bg-gray-100">
     <div class="flex">
@@ -14,7 +15,7 @@
         <div class="bg-black text-white w-64 min-h-screen p-4">
             <h1 class="text-2xl font-bold">Sales</h1>
             <nav class="mt-6">
-                <a href="{{ url_for('index') }}" class="block py-2 px-4 bg-red-500 text-white font-semibold" >Dashboard</a>
+                <a href="{{ url_for('index') }}" class="block py-2 px-4 bg-red-500 text-white font-semibold">Dashboard</a>
                 <a href="#" class="block py-2 px-4 hover:bg-gray-700">Orders</a>
                 <a href="#" class="block py-2 px-4 hover:bg-gray-700">Revenue</a>
                 <a href="#" class="block py-2 px-4 hover:bg-gray-700">Customers</a>
@@ -31,46 +32,27 @@
                     <input type="text" class="border px-4 py-2 rounded" placeholder="Search...">
                     <i class="fas fa-bell text-xl"></i>
                     <i class="fas fa-cog text-xl"></i>
-                    <img src="https://via.placeholder.com/40" class="rounded-full w-10 h-10">
+                    <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" class="rounded-full w-10 h-10">
                 </div>
             </div>
 
             <!-- Sales Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-green-500 text-2xl font-bold">$12,350</h2>
+                    <h2 id="totalRevenue" class="text-green-500 text-2xl font-bold">₹0</h2>
                     <p class="text-gray-500">Total Revenue</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-blue-500 text-2xl font-bold">150</h2>
+                    <h2 id="processedOrders" class="text-blue-500 text-2xl font-bold">0</h2>
                     <p class="text-gray-500">Orders Processed</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-red-500 text-2xl font-bold">5</h2>
+                    <h2 id="canceledOrders" class="text-red-500 text-2xl font-bold">0</h2>
                     <p class="text-gray-500">Orders Cancelled</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-yellow-500 text-2xl font-bold">320</h2>
+                    <h2 id="activeCustomers" class="text-yellow-500 text-2xl font-bold">0</h2>
                     <p class="text-gray-500">Active Customers</p>
-                </div>
-            </div>
-
-            <!-- Top Selling Products -->
-            <div class="bg-white p-4 rounded shadow mb-6">
-                <h3 class="text-lg font-semibold mb-4">Top Selling Products</h3>
-                <div class="flex items-center mb-2">
-                    <img src="https://via.placeholder.com/50" class="w-12 h-12 rounded mr-4">
-                    <div>
-                        <p>Product 1</p>
-                        <p class="text-gray-500">120 Sold</p>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <img src="https://via.placeholder.com/50" class="w-12 h-12 rounded mr-4">
-                    <div>
-                        <p>Product 2</p>
-                        <p class="text-gray-500">85 Sold</p>
-                    </div>
                 </div>
             </div>
 
@@ -86,25 +68,8 @@
                             <th class="p-2 border">Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="p-2 border">#1023</td>
-                            <td class="p-2 border">John Doe</td>
-                            <td class="p-2 border">$250</td>
-                            <td class="p-2 border text-green-500">Completed</td>
-                        </tr>
-                        <tr>
-                            <td class="p-2 border">#1024</td>
-                            <td class="p-2 border">Jane Smith</td>
-                            <td class="p-2 border">$180</td>
-                            <td class="p-2 border text-yellow-500">Pending</td>
-                        </tr>
-                        <tr>
-                            <td class="p-2 border">#1025</td>
-                            <td class="p-2 border">Mark Lee</td>
-                            <td class="p-2 border">$120</td>
-                            <td class="p-2 border text-red-500">Cancelled</td>
-                        </tr>
+                    <tbody id="recentOrders">
+                        <!-- Orders will be dynamically inserted here -->
                     </tbody>
                 </table>
             </div>

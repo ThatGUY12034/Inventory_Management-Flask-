@@ -31,13 +31,12 @@
             <!-- Header --> 
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-4">
-                    <button class="text-2xl"><i class="fas fa-plus-circle"></i></button>
+                    
                     <input  id="globalSearch" class="border rounded px-4 py-2" placeholder="Search" type="text"/>
                 </div>
                 <div class="flex items-center space-x-4">
                     <span class="text-lg font-semibold">{{ session.get('user', 'Guest') }}</span>
-                    <i class="fas fa-bell"></i>
-                    <i class="fas fa-cog"></i>
+                    
                     <div class="dropdown">
                         <!-- Image that triggers the dropdown -->
                         <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" alt="Dropdown Icon" onclick="toggleDropdown()" style="cursor: pointer;">

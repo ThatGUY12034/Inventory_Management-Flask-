@@ -285,7 +285,7 @@ th {
 
 /* MODAL STYLES */
 .modal {
-    display: none;
+    display: none; /* Hide modal by default */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -296,6 +296,11 @@ th {
     align-items: center;
     justify-content: center;
 }
+
+.modal.show {
+    display: flex !important;  /* Force modal to appear */
+}
+
 
 /* Modal Content */
 .modal-content {

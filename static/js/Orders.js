@@ -1,58 +1,51 @@
 document.addEventListener("DOMContentLoaded", function () {
     loadOrders();
 
-    // Handle order form submission
-    document.getElementById("addOrderForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        addOrder();
-    });
+    const form = document.getElementById("addOrderForm");
+    if (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            addOrder();
+        });
+    }
 
-    // Open modal on button click
-    document.getElementById("addOrderBtn").addEventListener("click", function () {
+    const modal = document.getElementById("orderModal");
+    const addOrderBtn = document.getElementById("addOrderBtn");
+    const closeModalBtn = document.getElementById("closeModal");
+    const cancelModalBtn = document.getElementById("cancelModal");
+
+    function toggleOrderModal(show) {
+        if (!modal) return;
+        modal.classList.toggle("show", show);
+        modal.style.display = show ? "block" : "none";
+    }
+
+    addOrderBtn.addEventListener("click", function () {
+        document.getElementById("addOrderForm").reset();
         toggleOrderModal(true);
     });
 
-    // Close modal when clicking close button
-    document.getElementById("closeModal").addEventListener("click", function () {
-        toggleOrderModal(false);
-    });
+    closeModalBtn.addEventListener("click", () => toggleOrderModal(false));
+    cancelModalBtn.addEventListener("click", () => toggleOrderModal(false));
 
-    // Close modal when clicking outside of it
     window.addEventListener("click", function (event) {
-        let modal = document.getElementById("orderModal");
-        if (event.target === modal) {
-            toggleOrderModal(false);
-        }
+        if (event.target === modal) toggleOrderModal(false);
     });
 });
 
-// Toggle Order Modal
-function toggleOrderModal(show) {
-    let modal = document.getElementById("orderModal");
-    if (!modal) return;
-
-    if (show) {
-        modal.style.display = "flex";
-        setTimeout(() => modal.classList.add("show"), 10);
-    } else {
-        modal.classList.remove("show");
-        setTimeout(() => modal.style.display = "none", 300);
-    }
-}
-
-// Add Order to Firebase
 function addOrder() {
     let orderId = document.getElementById("orderId").value.trim();
     let customerName = document.getElementById("customerName").value.trim();
     let orderDate = document.getElementById("orderDate").value;
+    let orderAmount = document.getElementById("orderAmount").value.trim();
     let orderStatus = document.getElementById("orderStatus").value;
 
-    if (!orderId || !customerName || !orderDate) {
+    if (!orderId || !customerName || !orderDate || !orderAmount) {
         alert("Please fill in all fields.");
         return;
     }
 
-    let orderData = { orderId, customerName, orderDate, orderStatus };
+    let orderData = { orderId, customerName, orderDate, orderAmount, orderStatus };
 
     fetch("/add_order", {
         method: "POST",
@@ -63,88 +56,100 @@ function addOrder() {
     .then(data => {
         if (data.success) {
             alert("Order added successfully!");
+            addOrderToTable(orderData);
+            updateOrderCounts();
             document.getElementById("addOrderForm").reset();
-            toggleOrderModal(false);
-            addOrderToTable(orderData); // Add directly without reloading
+            setTimeout(() => toggleOrderModal(false), 300);
         } else {
             alert("Error: " + (data.error || "Failed to add order."));
         }
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => console.error("Error adding order:", error));
 }
 
-// Load Orders from Firebase
 function loadOrders() {
     fetch("/get_orders")
     .then(response => response.json())
     .then(orders => {
         let ordersTable = document.getElementById("ordersTableBody");
-        ordersTable.innerHTML = ""; // Clear table before loading new orders
-
-        let pending = 0, shipped = 0, delivered = 0, returned = 0;
-
-        orders.forEach(order => {
-            addOrderToTable(order);
-            if (order.orderStatus === "Pending") pending++;
-            if (order.orderStatus === "Shipped") shipped++;
-            if (order.orderStatus === "Delivered") delivered++;
-            if (order.orderStatus === "Returned") returned++;
-        });
-
-        document.getElementById("pendingCount").textContent = pending;
-        document.getElementById("shippedCount").textContent = shipped;
-        document.getElementById("deliveredCount").textContent = delivered;
-        document.getElementById("returnedCount").textContent = returned;
+        ordersTable.innerHTML = "";
+        orders.forEach(order => addOrderToTable(order));
+        updateOrderCounts();
     })
     .catch(error => console.error("Error loading orders:", error));
 }
 
-// Add Order Row to Table (without reloading)
 function addOrderToTable(order) {
     let ordersTable = document.getElementById("ordersTableBody");
 
-    // Check if order already exists to prevent duplicates
-    if (document.getElementById(`row-${order.orderId}`)) {
-        console.warn(`Order ID ${order.orderId} already exists!`);
-        return;
-    }
+    if (document.getElementById(`row-${order.orderId}`)) return;
 
     let row = ordersTable.insertRow();
     row.id = `row-${order.orderId}`;
+
     row.insertCell(0).textContent = order.orderId;
     row.insertCell(1).textContent = order.customerName;
     row.insertCell(2).textContent = order.orderDate;
-    row.insertCell(3).textContent = order.orderStatus;
+    row.insertCell(3).textContent = `₹${order.orderAmount}`;
 
-    let actionCell = row.insertCell(4);
-    
-    // Create delete button
+    let statusCell = row.insertCell(4);
+    statusCell.textContent = order.orderStatus;
+    statusCell.classList.add(getStatusClass(order.orderStatus));
+
+    let actionCell = row.insertCell(5);
     let deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.classList.add("delete-btn");
     deleteButton.onclick = () => deleteOrder(order.orderId);
-    
     actionCell.appendChild(deleteButton);
 }
 
-// Delete Order
 function deleteOrder(orderId) {
     if (!confirm("Are you sure you want to delete this order?")) return;
 
-    fetch("/delete_order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId })
-    })
+    fetch(`/delete_order/${orderId}`, { method: "DELETE" })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             alert("Order deleted successfully!");
-            let row = document.getElementById(`row-${orderId}`);
-            if (row) row.remove();
+            document.getElementById(`row-${orderId}`).remove();
+            updateOrderCounts();
         } else {
-            alert("Error deleting order!");
+            alert("Error deleting order.");
         }
     })
     .catch(error => console.error("Error:", error));
+}
+
+function updateOrderCounts() {
+    fetch("/get_orders")
+    .then(response => response.json())
+    .then(orders => {
+        let pendingCount = 0, shippedCount = 0, deliveredCount = 0, returnedCount = 0;
+
+        orders.forEach(order => {
+            switch (order.orderStatus) {
+                case "Pending": pendingCount++; break;
+                case "Shipped": shippedCount++; break;
+                case "Delivered": deliveredCount++; break;
+                case "Returned": returnedCount++; break;
+            }
+        });
+
+        document.getElementById("pendingCount").textContent = pendingCount;
+        document.getElementById("shippedCount").textContent = shippedCount;
+        document.getElementById("deliveredCount").textContent = deliveredCount;
+        document.getElementById("returnedCount").textContent = returnedCount;
+    })
+    .catch(error => console.error("Error updating order counts:", error));
+}
+
+function getStatusClass(status) {
+    switch (status) {
+        case "Pending": return "pending";
+        case "Shipped": return "shipped";
+        case "Delivered": return "delivered";
+        case "Returned": return "returned";
+        default: return "";
+    }
 }
