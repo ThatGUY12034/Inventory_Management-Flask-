@@ -1,0 +1,79 @@
+/* Header Right Styling */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Adds spacing between elements */
+}
+
+
+/* Theme Toggle Icon */
+#themeToggle {
+    cursor: pointer;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+/* Light Theme */
+body.light-theme #themeToggle {
+    color: black;
+}
+
+/* Dark Theme */
+body.dark-theme #themeToggle {
+    color: yellow;
+}
+
+
+/* Light Theme */
+body.light-theme {
+    background-color: #ffffff;
+    color: #333;
+}
+
+.light-theme .sidebar {
+    background: #f4f4f4;
+    color: black;
+}
+
+.light-theme .sidebar-menu a {
+    color: black;
+}
+
+.light-theme .sidebar-menu a:hover,
+.light-theme .sidebar-menu .active {
+    background: #ddd;
+}
+
+.light-theme .card {
+    background: #ffffff;
+    color: black;
+}
+
+/* Dark Theme */
+body.dark-theme {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.dark-theme .sidebar {
+    background: #000;
+    color: white;
+}
+
+.dark-theme .sidebar-menu a {
+    color: white;
+}
+
+.dark-theme .sidebar-menu a:hover,
+.dark-theme .sidebar-menu .active {
+    background: red;
+}
+
+.dark-theme .card {
+    background: #222;
+    color: white;
+}
+
+.dark-theme #themeToggle {
+    color: yellow; /* Sun icon when dark mode is active */
+}

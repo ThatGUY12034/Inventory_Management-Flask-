@@ -1,101 +1,242 @@
-/* General Styles */
-body {
+/* General body styling */
+.body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
-/* Sidebar Styling */
-.bg-black {
-    transition: width 0.3s;
+/* Main container layout */
+.container {
+    display: flex;
+    gap: 20px; /* Adds space between sidebar and main content */
 }
 
-.bg-black:hover {
+/* Sidebar */
+.sidebar {
+    background: black;
+    color: white;
     width: 250px;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-/* Sidebar Links */
-nav a {
+/* Sidebar menu */
+.sidebar-menu a {
+    display: block;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 8px; /* Adds space between menu items */
     transition: background 0.3s;
 }
 
-/* Hover Effect */
-nav a:hover {
-    background: rgba(255, 255, 255, 0.2);
+.sidebar-menu a:hover,
+.sidebar-menu .active {
+    background: red;
 }
 
-/* Cards Styling */
-.bg-white {
-    transition: transform 0.2s, box-shadow 0.2s;
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 30px; /* Increased padding for better spacing */
 }
 
-.bg-white:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px; /* Adds spacing below header */
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd; /* Subtle separator */
+}
+
+/* Header left (search & add button) */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between button and search */
+}
+
+/* Search box */
+.search-box {
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Header-right section */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Increased space between elements */
+    position: relative;
 }
 
 /* Profile Image */
-img {
+.dropdown-icon {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-left: 10px;
-
-}
-
-/* Search Input */
-input[type="text"] {
-    outline: none;
-    border: 1px solid #ddd;
-    transition: border 0.3s;
-}
-
-input[type="text"]:focus {
-    border: 1px solid #007bff;
-}
-
-/* Icons */
-i {
+    object-fit: cover;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: transform 0.2s ease-in-out;
 }
 
-i:hover {
-    color: #007bff;
+.dropdown-icon:hover {
+    transform: scale(1.1);
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-/* Dropdown Content (Positioning Fixed) */
+/* Dropdown Content */
 .dropdown-content {
-    display: none;
     position: absolute;
-    background-color: white;
-    min-width: 150px;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    padding: 10px;
+    min-width: 120px;
+    display: none;
+    flex-direction: column;
     z-index: 1000;
-    
-    /* Fixes the issue when dropdown is near the screen edge */
-    right: 0; /* Aligns dropdown to the right */
-    max-width: 200px; /* Prevents too-wide content */
-    overflow: hidden; /* Prevents content from overflowing */
-    white-space: nowrap; /* Ensures text stays in one line */
 }
 
-/* Dropdown Items */
+.dropdown-content.show {
+    display: flex;
+}
+
 .dropdown-content a {
-    display: block;
-    padding: 8px;
+    padding: 12px;
+    text-align: center;
     text-decoration: none;
     color: black;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    transition: background 0.3s ease;
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    background: #f4f4f4;
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusts columns automatically */
+    gap: 25px; /* Adds spacing between cards */
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 20px; /* Adds space between rows */
+}
+
+/* Product details & top items spacing */
+.top-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Space between items */
+}
+
+.top-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 12px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+
+.low-stock {
+    color: red;
+}
+
+.active-percent {
+    color: green;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+/* Username styling */
+.username {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Notification & settings icons */
+.header-right i {
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.header-right i:hover {
+    color: #ff0000;
+}
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Profile Image (Dropdown Icon) */
+.dropdown-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.dropdown-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    min-width: 120px;
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+/* Show dropdown */
+.dropdown-content.show {
+    display: flex;
+}
+
+/* Dropdown Links */
+.dropdown-content a {
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    transition: background 0.3s ease;
+}
+
+.dropdown-content a:hover {
+    background: #f4f4f4;
 }

@@ -1,110 +1,52 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("JavaScript Loaded!");
+    // Toggle dropdown menu
+    const dropdownIcon = document.querySelector(".dropdown-icon");
+    const dropdownMenu = document.getElementById("dropdownMenu");
 
-    // Sidebar Toggle Function
-    const sidebar = document.querySelector(".bg-black");
-    const links = document.querySelectorAll("nav a");
-
-    links.forEach((link) => {
-        link.addEventListener("mouseenter", () => {
-            sidebar.style.width = "250px";
+    if (dropdownIcon && dropdownMenu) {
+        dropdownIcon.addEventListener("click", function (event) {
+            event.stopPropagation(); // Prevent event from bubbling to the document
+            dropdownMenu.classList.toggle("show");
         });
-        link.addEventListener("mouseleave", () => {
-            sidebar.style.width = "64px";
+
+        // Close dropdown if clicked outside
+        document.addEventListener("click", function (event) {
+            if (!dropdownMenu.contains(event.target) && !dropdownIcon.contains(event.target)) {
+                dropdownMenu.classList.remove("show");
+            }
         });
-    });
+    }
 
-    // Search Functionality
-    const searchInput = document.querySelector("input[type='text']");
-    searchInput.addEventListener("input", function () {
-        let filter = searchInput.value.toLowerCase();
-        let cards = document.querySelectorAll(".bg-white");
 
-        cards.forEach((card) => {
-            let text = card.innerText.toLowerCase();
-            card.style.display = text.includes(filter) ? "" : "none";
+    // Global search functionality
+    const searchInput = document.getElementById("globalSearch");
+    if (searchInput) {
+        searchInput.addEventListener("input", function () {
+            const query = searchInput.value.toLowerCase();
+            const items = document.querySelectorAll(".card, .top-item, .item");
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? "flex" : "none";
+            });
         });
-    });
-
-    // Clickable Icons (For Future Enhancements)
-    document.querySelectorAll("i").forEach((icon) => {
-        icon.addEventListener("click", function () {
-            alert("This feature is not yet implemented!");
-        });
-    });
-});
-
-function toggleDropdown() {
-    var dropdown = document.getElementById("dropdownMenu");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-}
-
-// Close the dropdown when clicking outside of it
-document.addEventListener("click", function(event) {
-    var dropdown = document.getElementById("dropdownMenu");
-    var image = document.querySelector(".dropdown img");
-    if (!dropdown.contains(event.target) && !image.contains(event.target)) {
-        dropdown.style.display = "none";
     }
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById('salesChart').getContext('2d');
+    // Fetch inventory items and display them in the Product Details section
+    fetch("/get_inventory")
+        .then(response => response.json())
+        .then(data => {
+            const productDetailsDiv = document.querySelector(".product-details");
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-            datasets: [{
-                label: 'Sales ($)',
-                data: [3000, 3500, 4000, 4500, 4200, 5000, 5500],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-});
-
-document.getElementById("globalSearch").addEventListener("input", async function () {
-    let query = this.value.trim().toLowerCase();
-    let resultsDiv = document.getElementById("searchResults");
-    let resultsList = document.getElementById("resultsList");
-
-    if (query.length === 0) {
-        resultsDiv.classList.add("hidden");
-        return;
-    }
-
-    try {
-        let response = await fetch(`/search?q=${query}`);
-        let results = await response.json();
-
-        resultsList.innerHTML = ""; // Clear previous results
-        let hasResults = false;
-
-        for (let category in results) {
-            let categoryItem = document.createElement("li");
-            categoryItem.innerHTML = `<strong>${category.toUpperCase()}:</strong>`;
-            resultsList.appendChild(categoryItem);
-
-            results[category].forEach(item => {
-                let listItem = document.createElement("li");
-                listItem.textContent = item;
-                resultsList.appendChild(listItem);
+            data.forEach(item => {
+                const itemDiv = document.createElement("div");
+                itemDiv.classList.add("item");
+                itemDiv.innerHTML = `<span>${item.name}</span> <span>${item.stock}</span>`;
+                productDetailsDiv.appendChild(itemDiv);
             });
-
-            hasResults = true;
-        }
-
-        resultsDiv.classList.toggle("hidden", !hasResults);
-    } catch (error) {
-        console.error("Search Error:", error);
-    }
+        })
+        .catch(error => console.error("Error fetching inventory:", error));
 });

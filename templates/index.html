@@ -1,47 +1,44 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Inventory Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
-<body class="bg-gray-100">
-    <div class="flex">
+<body class="body">
+    <div class="container">
         <!-- Sidebar -->
-        <div class="bg-black text-white w-64 min-h-screen">
-            <div class="p-4">
-                
-                    <h1 class="text-2xl font-bold">Inventory</h1>
-                
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Inventory</h1>
             </div>
-            <nav class="mt-10">
-                <a class="block py-2.5 px-4 bg-red-500 text-white font-semibold" href="">Dashboard</a>
-                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('inventory') }}">Inventory</a>
-                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Sales') }}">Sales</a>
-                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Orders') }}">Orders</a>
-                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Members') }}">Members</a>
-                <a class="block py-2.5 px-4 hover:bg-gray-700" href="{{ url_for('Reports') }}">Reports</a>
-
+            <nav class="sidebar-menu">
+                <a class="active" href="#">Dashboard</a>
+                <a href="{{ url_for('inventory') }}">Inventory</a>
+                <a href="{{ url_for('Sales') }}">Sales</a>
+                <a href="{{ url_for('Orders') }}">Orders</a>
+                <a href="{{ url_for('Members') }}">Members</a>
+                <a href="{{ url_for('Reports') }}">Reports</a>
             </nav>
         </div>
         <!-- Main Content -->
-        <div class="flex-1 p-6">
+        <div class="main-content">
             <!-- Header --> 
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center space-x-4">
-                    
-                    <input  id="globalSearch" class="border rounded px-4 py-2" placeholder="Search" type="text"/>
+            <div class="header">
+                <div class="header-left">
+                    <input id="globalSearch" class="search-box" placeholder="Search" type="text"/>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-lg font-semibold">{{ session.get('user', 'Guest') }}</span>
+                <div class="header-right">
+                    <span class="username">{{ session.get('user', 'Guest') }}</span>
+                    <!-- Theme Toggle Icon -->
+                    <i id="themeToggle" class="fas fa-moon"></i>  <!-- Moon for dark mode -->
                     
                     <div class="dropdown">
-                        <!-- Image that triggers the dropdown -->
-                        <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" alt="Dropdown Icon" onclick="toggleDropdown()" style="cursor: pointer;">
-                        
-                        <!-- Dropdown content -->
+                        <img src="https://storage.googleapis.com/a1aa/image/WxH-r_ddbVx754Ll2cPPGKdIBRQMxVXwucczCgCMJbY.jpg" 
+                             alt="Profile Photo" onclick="toggleDropdown()" class="dropdown-icon">
                         <div class="dropdown-content" id="dropdownMenu">
                             <a href="{{ url_for('logout') }}">Logout</a>
                         </div>
@@ -49,107 +46,72 @@
                 </div>
             </div>
             <!-- Sales Activity and Inventory Summary -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-blue-500 text-2xl font-bold">228</h2>
-                    <p class="text-gray-500">Qty</p>
-                    <p class="text-gray-700">TO BE PACKED</p>
+            <div class="grid">
+                <div class="card blue">
+                    <h2>228</h2>
+                    <p>Qty</p>
+                    <p>TO BE PACKED</p>
                 </div>
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-red-500 text-2xl font-bold">6</h2>
-                    <p class="text-gray-500">Pkgs</p>
-                    <p class="text-gray-700">TO BE SHIPPED</p>
+                <div class="card red">
+                    <h2>6</h2>
+                    <p>Pkgs</p>
+                    <p>TO BE SHIPPED</p>
                 </div>
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-green-500 text-2xl font-bold">10</h2>
-                    <p class="text-gray-500">Pkgs</p>
-                    <p class="text-gray-700">TO BE DELIVERED</p>
+                <div class="card green">
+                    <h2>10</h2>
+                    <p>Pkgs</p>
+                    <p>TO BE DELIVERED</p>
                 </div>
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-blue-500 text-2xl font-bold">474</h2>
-                    <p class="text-gray-500">Qty</p>
-                    <p class="text-gray-700">TO BE INVOICED</p>
+                <div class="card blue">
+                    <h2>474</h2>
+                    <p>Qty</p>
+                    <p>TO BE INVOICED</p>
                 </div>
             </div>
             <!-- Product Details and Top Selling Items -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="text-lg font-semibold mb-4">PRODUCT DETAILS</h3>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-red-500">Low Stock Items</span>
-                        <span class="text-red-500">3</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>All Item Group</span>
-                        <span>39</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>All Items</span>
-                        <span>190</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-red-500">Unconfirmed Items</span>
-                        <span class="text-red-500">121</span>
-                    </div>
-                    <div class="flex justify-between items-center mt-4">
-                        <span>Active Items</span>
-                        <span class="text-green-500">71%</span>
+            <div class="grid">
+                <div class="card">
+                    <h3>PRODUCT DETAILS</h3>
+                    <div class="product-details">
+                        <!-- Items will be inserted here dynamically -->
                     </div>
                 </div>
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="text-lg font-semibold mb-4">TOP SELLING ITEMS</h3>
-                    <div class="flex items-center mb-4">
-                        <img alt="Hanswooly Cotton Case" class="w-12 h-12 rounded mr-4" height="50" src="https://storage.googleapis.com/a1aa/image/r3q0GAVEl1OZAP8QnRRuY1GqHHL3O0t0jTvFFLwq2TE.jpg" width="50"/>
+                <div class="card">
+                    <h3>TOP SELLING ITEMS</h3>
+                    <div class="top-item">
+                        <img src="https://storage.googleapis.com/a1aa/image/r3q0GAVEl1OZAP8QnRRuY1GqHHL3O0t0jTvFFLwq2TE.jpg" alt="Hanswooly Cotton Case">
                         <div>
                             <p>Hanswooly Cotton Case</p>
-                            <p class="text-gray-500">171 pcs</p>
+                            <p class="item-qty">171 pcs</p>
                         </div>
                     </div>
-                    <div class="flex items-center">
-                        <img alt="Cutiepie Rompers" class="w-12 h-12 rounded mr-4" height="50" src="https://storage.googleapis.com/a1aa/image/ijlYpX-KxSI2Hanf7tSe_KCwKj1TD7hf4SZR_z_97IA.jpg" width="50"/>
+                    <div class="top-item">
+                        <img src="https://storage.googleapis.com/a1aa/image/ijlYpX-KxSI2Hanf7tSe_KCwKj1TD7hf4SZR_z_97IA.jpg" alt="Cutiepie Rompers">
                         <div>
                             <p>Cutiepie Rompers</p>
-                            <p class="text-gray-500">45 sets</p>
+                            <p class="item-qty">45 sets</p>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Purchase Order and Sales Order -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="text-lg font-semibold mb-4">PURCHASE ORDER</h3>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>This Month</span>
-                        <span class="text-blue-500">652.00</span>
-                    </div>
+            <div class="grid">
+                <div class="card">
+                    <h3>PURCHASE ORDER</h3>
+                    <div class="item"><span>This Month</span> <span class="blue">652.00</span></div>
                 </div>
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="text-lg font-semibold mb-4">SALES ORDER</h3>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>Channel</span>
-                        <span>Direct sales</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>Draft</span>
-                        <span>0</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>Confirmed</span>
-                        <span>50</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>Packed</span>
-                        <span>0</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span>Shipped</span>
-                        <span>0</span>
-                    </div>
+                <div class="card">
+                    <h3>SALES ORDER</h3>
+                    <div class="item"><span>Channel</span> <span>Direct sales</span></div>
+                    <div class="item"><span>Draft</span> <span>0</span></div>
+                    <div class="item"><span>Confirmed</span> <span>50</span></div>
+                    <div class="item"><span>Packed</span> <span>0</span></div>
+                    <div class="item"><span>Shipped</span> <span>0</span></div>
                 </div>
             </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>

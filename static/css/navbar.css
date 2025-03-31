@@ -1,0 +1,88 @@
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: black;
+    color: white;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Left Side - Title */
+.navbar-left h1 {
+    margin: 0;
+}
+
+/* Center - Search Bar */
+.navbar-center {
+    flex: 1;
+    text-align: center;
+}
+
+.search-box {
+    padding: 8px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Right Side - Icons & Profile */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-right i {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Profile Dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: white;
+    color: black;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    min-width: 120px;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background: lightgray;
+}
+
+.show {
+    display: block;
+}
+
+/* Push content down (since navbar is fixed) */
+.content {
+    margin-top: 80px;
+    padding: 20px;
+}

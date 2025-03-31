@@ -14,13 +14,26 @@ db = firestore.client()
 
 
 
+@app.context_processor
+def inject_theme():
+    return {"theme": session.get("theme", "light")}
+
+
+@app.route('/set_theme', methods=['POST'])
+def set_theme():
+    theme = request.json.get("theme")
+    if theme in ["light", "dark"]:
+        session["theme"] = theme  # Store in session
+        return jsonify({"message": "Theme updated successfully!"}), 200
+    return jsonify({"error": "Invalid theme"}), 400
+
 
 @app.route('/')
 def index():
     if "user" not in session or session["user"] is None:  #  Ensure proper session check
         return redirect(url_for('Login'))  
     
-    
+    theme = session.get("theme", "light")
 
     # Fetch inventory summary from Firestore
     summary_ref = db.collection('inventory_summary').document('dashboard')
@@ -47,24 +60,19 @@ def index():
                            products=product_data,
                            top_selling=top_selling_data,
                            purchase=purchase_data,
-                           sales=sales_data)
-@app.route("/search", methods=["GET"])
-def search():
-    query = request.args.get("q", "").lower()
-    results = {}
+                           sales=sales_data,
+                           theme=theme)
 
-    if query:
-        for key, items in data.items():
-            matched_items = [item for item in items if query in item.lower()]
-            if matched_items:
-                results[key] = matched_items
 
-    return jsonify(results)
-
+@app.route("/get_inventory")
+def get_inventory():
+    inventory_ref = db.collection("inventory").stream()
+    inventory_items = [{"name": item.get("name"), "stock": item.get("stock")} for item in inventory_ref]
+    return jsonify(inventory_items)
 
 @app.route('/inventory', methods=['GET'])
 def inventory():
-    
+    theme = session.get("theme", "light")
     try:
         inventory_items = []
         docs = db.collection("inventory").stream()
@@ -78,7 +86,7 @@ def inventory():
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return jsonify({"inventory": inventory_items})
 
-        return render_template('inventory.html', inventory=inventory_items)
+        return render_template('inventory.html', inventory=inventory_items, theme=theme)
     
     except Exception as e:
         return jsonify({"error": f"Error fetching inventory: {str(e)}"}), 500
@@ -202,92 +210,12 @@ def delete_order(order_id):
 
 @app.route('/Sales')
 def Sales():
-    return render_template('Sales.html')
-
-# -------------------- Route: Fetch Sales Data --------------------
-@app.route('/get_sales_data', methods=['GET'])
-def get_sales_data():
-    orders_ref = db.collection('orders')
-    orders = orders_ref.stream()
-
-    total_revenue = 0
-    processed_orders = 0
-    canceled_orders = 0
-    active_customers = set()  # Track unique customers
-    product_sales = {}  # Store product-wise sales count
-    recent_orders = []
-
-    for order in orders:
-        order_data = order.to_dict()
-        amount = order_data.get('amount', 0)
-
-        total_revenue += amount
-
-        # Count order status
-        if order_data.get('orderStatus') == "Completed":
-            processed_orders += 1
-        elif order_data.get('orderStatus') == "Cancelled":
-            canceled_orders += 1
-
-        # Track unique customers
-        active_customers.add(order_data.get("customerName", "Unknown"))
-
-        # Count sales per product
-        product_name = order_data.get('product_name', 'Unknown')
-        product_sales[product_name] = product_sales.get(product_name, 0) + 1
-
-        # Store recent orders
-        recent_orders.append({
-            "orderId": order_data.get("orderId"),
-            "customerName": order_data.get("customerName"),
-            "amount": amount,
-            "orderStatus": order_data.get("orderStatus"),
-            "orderDate": order_data.get("orderDate")
-        })
-
-    # Sort products by highest sales
-    top_selling_products = sorted(product_sales.items(), key=lambda x: x[1], reverse=True)[:5]
-
-    return jsonify({
-        "total_revenue": total_revenue,
-        "processed_orders": processed_orders,
-        "canceled_orders": canceled_orders,
-        "active_customers": len(active_customers),
-        "top_selling_products": [{"name": p[0], "sold": p[1]} for p in top_selling_products],
-        "recent_orders": recent_orders[-5:]  # Send last 5 recent orders
-    })
-#TO NOTIFY SALES PAGE TO REFRESH DATA 
-@app.route('/notify_sales_update', methods=['POST'])
-def notify_sales_update():
-    # Store a flag in the session to indicate sales data needs refreshing
-    session['sales_update'] = True
-    return jsonify({"message": "Sales page notified!"})
-
-# Route: Get Total Revenue (from Sales Collection)
-@app.route("/get_sales")
-def get_sales():
-    sales_ref = db.collection("sales").stream()
-    sales_data = [{"amount": doc.to_dict().get("amount", 0)} for doc in sales_ref]
-    return jsonify(sales_data)
-
-# Route: Get Total Members Count
-@app.route('/get_all_members', methods=['GET'])
-def get_all_members():
-    members_ref = db.collection("members").stream()
-    members = [member.to_dict() for member in members_ref]
-    return jsonify({"members": members})
-
-
-@app.route("/get_orders_count")
-def get_orders_count():
-    orders_ref = db.collection("orders").stream()
-    total_orders = sum(1 for _ in orders_ref)
-    return jsonify({"total_orders": total_orders})
-
-
+    theme = session.get("theme", "light")
+    return render_template('Sales.html', theme=theme)
     
 @app.route("/Login", methods=["GET", "POST"])
 def Login():
+    theme = session.get("theme", "light")
     if request.method == "POST":
         name = request.form.get("name")
         password = request.form.get("password")
@@ -315,10 +243,11 @@ def Login():
         else:
             flash(" User not found!", "danger")
 
-    return render_template("Login.html")
+    return render_template("Login.html", theme=theme)
 
 @app.route('/Register', methods=['GET','POST'])
 def Register():
+     theme = session.get("theme", "light")
      if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -350,18 +279,20 @@ def Register():
         flash('Registration successful! Please login.', 'success')
         return redirect(url_for('Login'))
 
-     return render_template('Register.html')
+     return render_template('Register.html', theme=theme)
 
 @app.route('/Orders')
 def Orders():
-    return render_template('Orders.html')
+    theme = session.get("theme", "light")
+    return render_template('Orders.html', theme=theme)
 
 members_ref = db.collection("members")  # Firestore Collection
 
 # 🔹 Route to display Members page
 @app.route('/Members')  
 def Members():
-    return render_template('Members.html')
+    theme = session.get("theme", "light")
+    return render_template('Members.html', theme=theme)
 
 # 🔹 Add Member API (Firestore)
 @app.route('/add_member', methods=['POST'])
@@ -479,13 +410,15 @@ def get_reports():
 
 @app.route('/Reports')
 def Reports():
-    return render_template('Reports.html')
+    theme = session.get("theme", "light")
+    return render_template('Reports.html', theme=theme)
 
 @app.route('/logout')
 def logout():
+    theme = session.get("theme", "light")
     session.pop('user', None)  # Clear user session
     flash("You have been logged out.", "info")  # Optional flash message
-    return redirect(url_for('Login'))  # Redirect to Login page
+    return redirect(url_for('Login'), theme=theme)  # Redirect to Login page
 
 if __name__ == '__main__':
     app.run(debug=True)
