@@ -63,6 +63,79 @@ def index():
                            sales=sales_data,
                            theme=theme)
 
+@app.route('/api/dashboard_summary', methods=['GET'])
+def get_dashboard_summary():
+    try:
+        # Fetch orders data
+        orders_docs = db.collection('orders').stream()
+        orders_data = [doc.to_dict() for doc in orders_docs]
+
+        # Count statistics
+        to_be_processed = sum(1 for order in orders_data if order.get("orderStatus") == "Pending")
+        to_be_shipped = sum(1 for order in orders_data if order.get("orderStatus") == "Shipped")
+        to_be_delivered = sum(1 for order in orders_data if order.get("orderStatus") == "Out for Delivery")
+        returned = sum(1 for order in orders_data if order.get("orderStatus") == "Returned")
+
+        return jsonify({
+            "toBeProcessed": to_be_processed,
+            "toBeShipped": to_be_shipped,
+            "toBeDelivered": to_be_delivered,
+            "returned": returned
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/recent_orders', methods=['GET'])
+def get_recent_orders():
+    try:
+        # Fetch orders from Firebase, sorted by order date (descending) and limit to 5 most recent
+        orders_ref = db.collection('orders').order_by('orderDate', direction=firestore.Query.DESCENDING).limit(5)
+        orders_docs = orders_ref.stream()
+
+        # Collect the orders into a list of dictionaries with all necessary fields
+        recent_orders = []
+        for doc in orders_docs:
+            order_data = doc.to_dict()
+            recent_orders.append({
+                "orderId": order_data.get("orderId"),
+                "customerName": order_data.get("customerName"),
+                "orderDate": order_data.get("orderDate"),
+                "orderAmount": order_data.get("orderAmount"),
+                "orderStatus": order_data.get("orderStatus")
+            })
+
+        return jsonify(recent_orders)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/recent_members', methods=['GET'])
+def get_recent_members():
+    try:
+        # Fetch members from Firebase, sorted by newest added first, limit to 5
+        members_ref = db.collection('members').order_by('name').limit(5)
+        members_docs = members_ref.stream()
+
+        # Collect the members into a list of dictionaries
+        recent_members = []
+        for doc in members_docs:
+            member_data = doc.to_dict()
+            recent_members.append({
+                "memberId": doc.id,  # Firestore document ID
+                "name": member_data.get("name", "Unknown"),
+                "address": member_data.get("address", "Unknown"),
+                "contact": member_data.get("contact", "Unknown"),
+                "mail": member_data.get("mail", "Unknown"),
+                "permission": member_data.get("permission", "Unknown")
+            })
+
+        return jsonify(recent_members)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 @app.route("/get_inventory")
 def get_inventory():
@@ -187,13 +260,12 @@ def add_order():
 
 @app.route("/get_orders", methods=["GET"])
 def get_orders():
-    """Retrieve all orders from Firebase"""
     orders = []
-    docs = db.collection("orders").stream()
+    docs = db.collection("orders").order_by("orderDate", direction=firestore.Query.DESCENDING).limit(5).stream()
 
     for doc in docs:
         order_data = doc.to_dict()
-        order_data["orderAmount"] = float(order_data.get("orderAmount", 0))  # Ensure amount is float
+        order_data["orderAmount"] = float(order_data.get("orderAmount", 0))
         orders.append(order_data)
 
     return jsonify(orders)

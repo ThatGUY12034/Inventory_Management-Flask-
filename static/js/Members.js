@@ -11,6 +11,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let editMemberId = null; // Stores member ID when editing
 
+// Function to fetch the latest members and display them
+// Function to fetch the latest 5 members and display them
+function loadRecentMembers() {
+    fetch('/api/recent_members')  // Endpoint to fetch the latest members (ensure the backend is set up for this)
+        .then(response => response.json())
+        .then(members => {
+            let membersList = document.getElementById("recentMembersList");
+            membersList.innerHTML = "";  // Clear previous content
+
+            if (members.length === 0) {
+                membersList.innerHTML = "<p>No recent members found.</p>";
+                return;
+            }
+
+            members.forEach(member => {
+                const memberDiv = document.createElement("div");
+                memberDiv.classList.add("item");
+
+                // Insert member information dynamically
+                memberDiv.innerHTML = `
+                    <span>Name: ${member.name}</span><br>
+                    <span>Address: ${member.address}</span><br>
+                    <span>Contact: ${member.contact}</span><br>
+                    <span>Email: ${member.email}</span><br>
+                    <span>Permission: ${member.permission}</span>
+                `;
+
+                membersList.appendChild(memberDiv);
+            });
+        })
+        .catch(error => console.error("❌ Error loading recent members:", error));
+}
+
 // Function to show the form (for adding or editing)
 function openForm(member = null) {
     const form = document.getElementById("memberForm");

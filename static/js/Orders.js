@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    loadOrders();
+    loadOrders(); // Regular orders table
+    loadRecentOrders(); // Fetch and display the 5 most recent orders in the dashboard
 
     const form = document.getElementById("addOrderForm");
     if (form) {
@@ -33,6 +34,43 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
+// Fetch and display the 5 most recent orders in the dashboard
+// Fetch and display the 5 most recent orders in the dashboard table
+function loadRecentOrders() {
+    fetch('/api/recent_orders')
+        .then(response => response.json())
+        .then(orders => {
+            let recentOrdersBody = document.getElementById("recentOrdersBody");
+            recentOrdersBody.innerHTML = "";  // Clear previous content
+
+            // Loop through the orders and display them dynamically in table rows
+            orders.forEach(order => {
+                const row = document.createElement("tr");
+
+                // Format the date and amount properly
+                const orderDate = new Date(order.orderDate).toLocaleDateString();  // Format date
+                const orderAmount = `₹${parseFloat(order.orderAmount || 0).toLocaleString()}`;  // Format amount
+
+                row.innerHTML = `
+                    <td>${order.orderId}</td>
+                    <td>${order.customerName}</td>
+                    <td>${orderDate}</td>
+                    <td>${orderAmount}</td>
+                    <td>${order.orderStatus}</td>
+                `;
+
+                recentOrdersBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error("Error loading recent orders:", error));
+}
+
+// Call the function on page load to display the recent orders
+document.addEventListener("DOMContentLoaded", function () {
+    loadRecentOrders();  // Fetch and display the 5 most recent orders
+});
+// Add a new order
 function addOrder() {
     let orderId = document.getElementById("orderId").value.trim();
     let customerName = document.getElementById("customerName").value.trim();
@@ -67,6 +105,7 @@ function addOrder() {
     .catch(error => console.error("Error adding order:", error));
 }
 
+// Load all orders for the orders table
 function loadOrders() {
     fetch("/get_orders")
     .then(response => response.json())
@@ -79,6 +118,7 @@ function loadOrders() {
     .catch(error => console.error("Error loading orders:", error));
 }
 
+// Add an order to the orders table
 function addOrderToTable(order) {
     let ordersTable = document.getElementById("ordersTableBody");
 
@@ -90,7 +130,7 @@ function addOrderToTable(order) {
     row.insertCell(0).textContent = order.orderId;
     row.insertCell(1).textContent = order.customerName;
     row.insertCell(2).textContent = order.orderDate;
-    row.insertCell(3).textContent = `₹${order.orderAmount}`;
+    row.insertCell(3).textContent = `₹${parseFloat(order.orderAmount || 0).toLocaleString()}`;
 
     let statusCell = row.insertCell(4);
     statusCell.textContent = order.orderStatus;
@@ -104,6 +144,7 @@ function addOrderToTable(order) {
     actionCell.appendChild(deleteButton);
 }
 
+// Delete an order
 function deleteOrder(orderId) {
     if (!confirm("Are you sure you want to delete this order?")) return;
 
@@ -121,6 +162,7 @@ function deleteOrder(orderId) {
     .catch(error => console.error("Error:", error));
 }
 
+// Update the order counts (Pending, Shipped, Delivered, Returned)
 function updateOrderCounts() {
     fetch("/get_orders")
     .then(response => response.json())
@@ -144,6 +186,7 @@ function updateOrderCounts() {
     .catch(error => console.error("Error updating order counts:", error));
 }
 
+// Return a class based on the order status (for color coding)
 function getStatusClass(status) {
     switch (status) {
         case "Pending": return "pending";

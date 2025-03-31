@@ -240,3 +240,104 @@
 .dropdown-content a:hover {
     background: #f4f4f4;
 }
+#dashboardPieChart {
+    width: 100%;
+    height: 100px;  /* Set a fixed height for the pie chart */
+    max-height: 200px;  /* Optional: Max height to avoid it growing too large */
+    margin: 0 auto;  /* Center the chart horizontally */
+}
+/* Basic table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Hover effect for rows */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Table headers */
+th {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Styling for the data rows */
+td {
+    font-size: 14px;
+}
+
+/* Style for the "Amount" column */
+td:nth-child(4) {
+    text-align: right;
+    font-weight: bold;
+    color: #009688;
+}
+
+/* Style for the "Status" column */
+td:nth-child(5) {
+    font-weight: bold;
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    text-transform: capitalize;
+}
+
+/* Color codes based on order status */
+td.pending {
+    background-color: #ff9800; /* Orange for Pending */
+    color: #fff;
+}
+
+td.shipped {
+    background-color: #2196F3; /* Blue for Shipped */
+    color: #fff;
+}
+
+td.delivered {
+    background-color: #4CAF50; /* Green for Delivered */
+    color: #fff;
+}
+
+td.returned {
+    background-color: #f44336; /* Red for Returned */
+    color: #fff;
+}
+.Order-Heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    justify-content: center; /* Center the heading vertically */
+}
+
+/* Make the table responsive on smaller screens */
+@media (max-width: 768px) {
+    th, td {
+        padding: 8px 10px;
+    }
+
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+}

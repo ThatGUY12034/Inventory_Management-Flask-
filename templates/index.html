@@ -46,72 +46,88 @@
                 </div>
             </div>
             <!-- Sales Activity and Inventory Summary -->
+            
             <div class="grid">
                 <div class="card blue">
-                    <h2>228</h2>
+                    <h2 id="toBeProcessed">0</h2>
                     <p>Qty</p>
-                    <p>TO BE PACKED</p>
+                    <p>To Be Processed</p>
                 </div>
                 <div class="card red">
-                    <h2>6</h2>
+                    <h2 id="toBeShipped">0</h2>
                     <p>Pkgs</p>
                     <p>TO BE SHIPPED</p>
                 </div>
                 <div class="card green">
-                    <h2>10</h2>
+                    <h2 id="toBeDelivered">0</h2>
                     <p>Pkgs</p>
                     <p>TO BE DELIVERED</p>
                 </div>
                 <div class="card blue">
-                    <h2>474</h2>
+                    <h2 id="returned">0</h2>
                     <p>Qty</p>
-                    <p>TO BE INVOICED</p>
+                    <p>Returned</p>
                 </div>
             </div>
+
             <!-- Product Details and Top Selling Items -->
             <div class="grid">
                 <div class="card">
                     <h3>PRODUCT DETAILS</h3>
                     <div class="product-details">
                         <!-- Items will be inserted here dynamically -->
+                         <!-- Chart-->
                     </div>
                 </div>
-                <div class="card">
-                    <h3>TOP SELLING ITEMS</h3>
-                    <div class="top-item">
-                        <img src="https://storage.googleapis.com/a1aa/image/r3q0GAVEl1OZAP8QnRRuY1GqHHL3O0t0jTvFFLwq2TE.jpg" alt="Hanswooly Cotton Case">
-                        <div>
-                            <p>Hanswooly Cotton Case</p>
-                            <p class="item-qty">171 pcs</p>
-                        </div>
+                    
+                    <div class="card">
+                        <h3>Sales Overview (Pie Chart)</h3>
+                        <canvas id="dashboardPieChart"></canvas>  <!-- Pie chart for the dashboard -->
                     </div>
-                    <div class="top-item">
-                        <img src="https://storage.googleapis.com/a1aa/image/ijlYpX-KxSI2Hanf7tSe_KCwKj1TD7hf4SZR_z_97IA.jpg" alt="Cutiepie Rompers">
-                        <div>
-                            <p>Cutiepie Rompers</p>
-                            <p class="item-qty">45 sets</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </div> 
+                 
             <!-- Purchase Order and Sales Order -->
             <div class="grid">
-                <div class="card">
-                    <h3>PURCHASE ORDER</h3>
-                    <div class="item"><span>This Month</span> <span class="blue">652.00</span></div>
+                <!-- Recent Orders Section -->
+                
+                <div id="recentOrdersTable">
+                   <h3 class ="Order-Heading">Recent Orders</h3> 
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Order Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersBody">
+                            <!-- Recent orders will be dynamically inserted here -->
+                        </tbody>
+                    </table>
                 </div>
+                
+                
+               
                 <div class="card">
-                    <h3>SALES ORDER</h3>
-                    <div class="item"><span>Channel</span> <span>Direct sales</span></div>
-                    <div class="item"><span>Draft</span> <span>0</span></div>
-                    <div class="item"><span>Confirmed</span> <span>50</span></div>
-                    <div class="item"><span>Packed</span> <span>0</span></div>
-                    <div class="item"><span>Shipped</span> <span>0</span></div>
+                    <h3>RECENTLY ADDED MEMBER</h3>
+                    <div id="recent-member">
+                        <div id="recent-members">
+                            <p>Loading...</p> <!-- Placeholder before data loads -->
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            
+                
+                
+                
     </div>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="static/js/Orders.js"></script><!-- Ensure your script is correctly linked -->
+    <script src="static/js/index.js"></script>  
+
 </body>
 </html>
