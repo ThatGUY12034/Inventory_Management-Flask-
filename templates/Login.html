@@ -1,44 +1,48 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Login Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Login.css') }}">
 </head>
 <body>
-   <div class="a">
-   <div class="form-popup" id="myForm">
-                <form  class="form-container" action="{{ url_for('Login') }}" method="POST" >
-                    <h1><b>Login </b></h1>
-
-                     {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category,message in messages %}
-                        <div class="alert alert-{{category}}">{{message}}</div>
-                    {% endfor %}
-                {% endif %}
-                {% endwith %}
-                        <label>Username</label>
-                        <input type="text" name="name" class="form-control" required>
-                    
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    
-                        <input type="submit" value="Login" class="btn">
-                        <p>Don't have an account? 
-                            <a href="{{ url_for ('Register') }}" class="register-link">Register here</a>
-                        </p>  
-                </form>
+    <div class="wrapper">
+        <div class="card-switch">
+            <label class="switch">
+                <input type="checkbox" class="toggle">
+                <span class="slider"></span>
+                <span class="card-side"></span>
+                <div class="flip-card__inner">
+                    <div class="flip-card__front">
+                        <div class="title">Log in</div>
+                        <form class="flip-card__form" action="{{ url_for('Login') }}" method="POST">
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                            <input class="flip-card__input" name="name" placeholder="Username" type="text" required>
+                            <input class="flip-card__input" name="password" placeholder="Password" type="password" required>
+                            <button class="flip-card__btn" type="submit">Let’s go!</button>
+                            
+                        </form>
                     </div>
-            </div>
-            <script src="{{ url_for('static', filename='js/Login.js') }}"></script>
+                    <div class="flip-card__back">
+                        <div class="title">Sign up</div>
+                        <form class="flip-card__form" action="{{ url_for('Register') }}" method="POST">
+                            <input class="flip-card__input" name="username" placeholder="username" type="text" required>
+                            <input class="flip-card__input" name="email" placeholder="Email" type="email" required>
+                            <input class="flip-card__input" name="password" placeholder="password" type="password" required>
+                            <button class="flip-card__btn" type="submit">Confirm!</button>
+                        </form>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/Login.js') }}"></script>
+    
 </body>
 </html>
-<script>
-    $(document).ready(function(){
-        $(".alert").hide(2000)
-    });
-</script>
-<script>
-    $(document).ready(function(){
-        $("form").attr("autocomplete","off");
-    });
-</script>

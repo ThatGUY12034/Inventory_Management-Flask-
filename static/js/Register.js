@@ -16,19 +16,14 @@ document.addEventListener("DOMContentLoaded", function () {
         registerForm.addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent default form submission
 
+            // Get values from form inputs
             const username = document.querySelector("input[name='username']").value.trim();
             const email = document.querySelector("input[name='email']").value.trim();
             const password = document.querySelector("input[name='password']").value.trim();
-            const confirmPassword = document.querySelector("input[name='confirm_password']").value.trim();
 
             // 🛑 Client-side validation
-            if (!username || !email || !password || !confirmPassword) {
+            if (!username || !email || !password) {
                 showAlert("All fields are required!", "danger");
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showAlert("Passwords do not match!", "danger");
                 return;
             }
 
@@ -42,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     username: username,
                     email: email,
                     password: password,
-                    confirm_password: confirmPassword
                 }),
             })
             .then(response => response.text())

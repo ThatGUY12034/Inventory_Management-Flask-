@@ -308,7 +308,7 @@ def Login():
             # Verify password
             if bcrypt.checkpw(password.encode("utf-8"), stored_hashed_password.encode("utf-8")):
                 session["user"] = name
-                flash("Login successful!", "success")
+                
                 return redirect(url_for("index"))  # Redirect to home
             else:
                 flash(" Incorrect password!", "danger")
@@ -324,11 +324,9 @@ def Register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        confirm_password = request.form['confirm_password']
+        
 
-        if password != confirm_password:
-            flash('Passwords do not match', 'danger')
-            return redirect(url_for('Register'))
+        
 
         # Check if user already exists
         users_ref = db.collection('users')
@@ -490,7 +488,7 @@ def logout():
     theme = session.get("theme", "light")
     session.pop('user', None)  # Clear user session
     flash("You have been logged out.", "info")  # Optional flash message
-    return redirect(url_for('Login'), theme=theme)  # Redirect to Login page
+    return redirect(url_for('Login'))  # Redirect to Login page
 
 if __name__ == '__main__':
     app.run(debug=True)

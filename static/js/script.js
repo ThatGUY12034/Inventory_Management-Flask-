@@ -114,3 +114,12 @@ function updateDashboardPieChart(labels, salesData) {
 
 // Initialize dashboard data on page load
 document.addEventListener("DOMContentLoaded", fetchDashboardData);
+
+function toggleDropdown() {
+    let dropdown = document.getElementById("dropdownMenu");
+    dropdown.classList.toggle("show");
+}
+
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    window.location.href = "login.html"; // Change to your actual login page URL
+});
