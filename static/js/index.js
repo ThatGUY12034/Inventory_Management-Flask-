@@ -41,7 +41,19 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             const productDetailsDiv = document.querySelector(".product-details");
 
+            // Use a Map to store unique items by name
+            const uniqueItemsMap = new Map();
             data.forEach(item => {
+                if (!uniqueItemsMap.has(item.name)) {
+                    uniqueItemsMap.set(item.name, item);
+                }
+            });
+
+            // Clear previous content (optional if this runs multiple times)
+            productDetailsDiv.innerHTML = "";
+
+            // Display unique items
+            uniqueItemsMap.forEach(item => {
                 const itemDiv = document.createElement("div");
                 itemDiv.classList.add("item");
                 itemDiv.innerHTML = `<span>${item.name}</span> <span>${item.stock}</span>`;
@@ -50,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => console.error("Error fetching inventory:", error));
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     fetchRecentMembers();
